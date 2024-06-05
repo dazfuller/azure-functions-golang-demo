@@ -54,7 +54,7 @@ type CommunicationDevices struct {
 				Batteries []struct {
 					ModuleNumber    int    `json:"module_number"`
 					Serial          string `json:"serial"`
-					FirmwareVersion string `json:"firmware_version"`
+					FirmwareVersion int    `json:"firmware_version"`
 					Capacity        struct {
 						Full   float64 `json:"full"`
 						Design int     `json:"design"`
@@ -203,5 +203,6 @@ func (a *Api) makeApiRequest(path string, responseTarget interface{}) error {
 	}
 
 	defer res.Body.Close()
+
 	return json.NewDecoder(res.Body).Decode(responseTarget)
 }
