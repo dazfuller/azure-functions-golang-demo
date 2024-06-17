@@ -5,7 +5,15 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strings"
 )
+
+func caseInsensitiveMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		r.URL.Path = strings.ToLower(r.URL.Path)
+		next.ServeHTTP(w, r)
+	})
+}
 
 func main() {
 	apiKey := os.Getenv("GivEnergyApiKey")
@@ -18,7 +26,9 @@ func main() {
 		ApiKey: apiKey,
 	}
 
-	http.HandleFunc("/api/MeterData", givEnergyManager.GivEnergyHandler)
+	mux := http.NewServeMux()
+
+	mux.HandleFunc("/api/meterdata", givEnergyManager.GivEnergyHandler)
 	log.Printf("Internal go server about to list on %s", listenAddr)
-	log.Fatal(http.ListenAndServe(listenAddr, nil))
+	log.Fatal(http.ListenAndServe(listenAddr, caseInsensitiveMiddleware(mux)))
 }

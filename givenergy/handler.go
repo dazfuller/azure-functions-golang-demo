@@ -12,7 +12,7 @@ type GivEnergyManager struct {
 }
 
 func (ge *GivEnergyManager) GivEnergyHandler(w http.ResponseWriter, r *http.Request) {
-	log.Println("GivEnergy handler called")
+	log.Printf("GivEnergy handler called at: %s", r.URL.Path)
 	api := givenergy.NewAccountApi(ge.ApiKey)
 
 	devices := api.GetCommunicationDevices()
